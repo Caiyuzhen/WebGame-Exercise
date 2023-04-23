@@ -1,5 +1,5 @@
 // ⚡️在最外层 js 加载数据
-import { Application } from './src/libs/pixijs.js'
+import { Application, Assets } from './src/libs/pixijs.js'
 import LoadingScene from './src/components/loading/loadingScene.js'
 
 
@@ -12,4 +12,13 @@ const app = new Application({
 
 // 把画布添加到 DOM 上
 document.body.appendChild(app.view)
-console.log(LoadingScene)
+
+
+// 🌟加载小星星的数据
+const sheet = await Assets.load('src/assets/raibowStarSheet/rainbowStar.json')
+// console.log(sheet)
+
+// ⚡️传入小星星数据数据
+const loadingScene = new LoadingScene(sheet)
+
+app.stage.addChild(loadingScene.sceneBox)
