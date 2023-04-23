@@ -10,15 +10,23 @@ const app = new Application({
 	autoDensity: true, //自动适配分辨率
 })
 
+
 // 把画布添加到 DOM 上
 document.body.appendChild(app.view)
+
+
+// 加载字体
+await Assets.load('src/assets/fonts/RetroGaming.ttf')
+await Assets.load('src/assets/fonts/upheavtt.ttf')
 
 
 // 🌟加载小星星的数据
 const sheet = await Assets.load('src/assets/raibowStarSheet/rainbowStar.json')
 // console.log(sheet)
 
+
 // ⚡️传入小星星数据数据
 const loadingScene = new LoadingScene(sheet)
+
 
 app.stage.addChild(loadingScene.sceneBox)

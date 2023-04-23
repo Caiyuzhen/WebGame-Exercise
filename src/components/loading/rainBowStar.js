@@ -1,6 +1,5 @@
 import { AnimatedSprite , Container } from "../../libs/pixijs.js"
 
-
 export default class RainBowStar {
 	constructor(rainbowStarSheetData) {
 		this.rainbowStarSheetDataAll = rainbowStarSheetData
@@ -26,6 +25,8 @@ export default class RainBowStar {
 		this.autoWink() // 🔥随机眨眼睛
 		this.elementBox.pivot.set(this.elementBox.width / 2, this.elementBox.height / 2) // 🔥设置中心点 (注意 Container 元素没有 anchor 属性, 需要通过 pivot 来设置)
 		this.elementBox.scale.set(0.5, 0.5) // 缩放(⚡️注意先后顺序！先缩放再调整 pivot 的话, pivot 会被缩放！！)
+		this.elementBox.x = 200
+		this.elementBox.y = 200
 	}
 
 	
