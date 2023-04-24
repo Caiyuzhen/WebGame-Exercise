@@ -27,6 +27,9 @@ export default class LoadingBar {
 				console.log('3秒加载完')
 			}
 		})
+
+		// 🔥设置进度条的中心锚点
+		this.element.pivot.set(this.element.width / 2, this.element.height / 2)
 	}
 
 	createRects() {  //创建 24 个小方块

@@ -54,7 +54,7 @@ export default class AuthorText {
 			intervalId = setInterval( () => {
 				// 循环变色
 				this.HelloText.style.fill = colors[i]
-				i = (i + 1) % colors.length // 应为上面 setInterval, 所以 i 会不断的 + 1 , 所以索引值就会不断的增加, 然后取余获取完所有颜色
+				i = (i + 1) % colors.length // 应为上面 setInterval, 所以 i 会不断的 + 1 , 所以索引值就会不断的【累加】, 然后取余获取完所有颜色
 
 			}, 200)
 		})
