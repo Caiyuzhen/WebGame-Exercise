@@ -11,8 +11,8 @@ export default class LoadingBar {
 
 	init() { 
 		this.createRects()
-		this.element.x = 100
-		this.element.y = 260
+		// this.element.x = 100
+		// this.element.y = 260
 	
 		const obj = {
 			number: 0
