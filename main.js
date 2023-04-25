@@ -27,6 +27,22 @@ const rainbowColorTexture = await Assets.load('src/assets/titleTextures/rainbowC
 const chnText = await Assets.load('src/assets/titleTextures/dang.png')
 
 
+// 打包加载所有点缀图片
+Assets.addBundle('shapes', {
+	shape1: 'src/assets/shapes/shape1.png',
+	shape2: 'src/assets/shapes/shape2.png',
+	shape3: 'src/assets/shapes/shape3.png',
+	shape4: 'src/assets/shapes/shape4.png',
+	shape5: 'src/assets/shapes/shape5.png',
+	shape6: 'src/assets/shapes/shape6.png',
+	shape7: 'src/assets/shapes/shape7.png',
+	shape8: 'src/assets/shapes/shape8.png',
+})
+
+const shapeBundle = await Assets.loadBundle('shapes') //👈 loadBundle ！不是 load !
+console.log('shapeBundle:', shapeBundle)
+
+
 // 🌟加载小星星的数据
 const sheet = await Assets.load('src/assets/raibowStarSheet/rainbowStar.json')
 // console.log(sheet)
@@ -36,7 +52,7 @@ const sheet = await Assets.load('src/assets/raibowStarSheet/rainbowStar.json')
 // const loadingSceneContainer = new LoadingSceneContainer(sheet, app) //传入画布（app, 然后下层去计算画布的宽高, 把元素放在画布中心）
 
 
-const playScene = new PlayScene({gameBlockTextTexture, rainbowColorTexture, chnText}, app) //👈传一个对象的方式
+const playScene = new PlayScene({gameBlockTextTexture, rainbowColorTexture, chnText, shapeBundle}, app) //👈传一个对象的方式
 app.stage.addChild(playScene.sceneBox)
 
 
