@@ -16,14 +16,14 @@ export default class PlayScene {
 		this.shapeBundle = shapeBundle
 		this.app = app //🔥要存到实例上才能传递给下游使用！
 		this.shapePosInfo = [// 图形小元素的位置值, 可以访问 this.app 也可以访问上游传下来的 app 来获取 screen 数据
-			{ x: app.screen.width / 3, y: 500 },
-			{ x: app.screen.width / 8, y: 300 },
-			{ x: app.screen.width / 5 * 4, y: 200 },
-			{ x: app.screen.width / 5 * 4.5, y: 100 },
-			{ x: app.screen.width / 10 * 4, y: 80 },
-			{ x: app.screen.width / 6 * 4, y: 520 },
-			{ x: app.screen.width / 6 * 5, y: 400 },
-			{ x: app.screen.width / 5, y: 150 },
+		{ from: { x: 100, y: -20 }, to: { x: app.screen.width / 3, y: 500 } },
+		{ from: { x: -20, y: 100 }, to: { x: app.screen.width / 8, y: 300 } },
+		{ from: { x: app.screen.width / 3, y: -50 }, to: { x: app.screen.width / 5 * 4, y: 200 } },
+		{ from: { x: app.screen.width, y: -10 }, to: { x: app.screen.width / 5 * 4.5, y: 100 } },
+		{ from: { x: app.screen.width / 2, y: -20 }, to: { x: app.screen.width / 10 * 4, y: 80 } },
+		{ from: { x: app.screen.width / 5 * 4, y: -20 }, to: { x: app.screen.width / 6 * 4, y: 520 } },
+		{ from: { x: app.screen.width, y: -20 }, to: { x: app.screen.width / 6 * 5, y: 400 } },
+		{ from: { x: app.screen.width + 30, y: 100 }, to: { x: app.screen.width / 5, y: 150 } },
 		]
 		this.init() //⚡️⚡️this 放最后的原因是上边的数据定义好后, 才能在 init() 中访问到!!
 	}
