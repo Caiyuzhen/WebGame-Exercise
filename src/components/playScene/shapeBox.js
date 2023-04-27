@@ -1,7 +1,9 @@
 import { Sprite } from "../../libs/pixijs.js"
+import Character from "./character.js"
 
-export default class ShapeBox {
+export default class ShapeBox extends Character {
 	constructor(texture, posInfo) {  //🔥🔥 texture 材质由上游传入！ posInfo 元素位置信息由上游传入！
+		super() //👈👈记得一定要 super() 一下!! 要写在最前面!! 相当于去调用 character() 的构造函数!! 如果给 super() 传递数据那么就是给父类传递数据!!
 		this.element = new Sprite(texture) //🔥🔥 实例化形状, 材质由上游传入！
 		this.posInfo = posInfo //存一下, 下面的 init() 才能访问到！
 		this.animationInfo = { //⚡️⚡️⚡️ GSAP 的帧动画数据

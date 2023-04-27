@@ -25,7 +25,7 @@ export default class PlayScene {
 			{ x: app.screen.width / 6 * 5, y: 400 },
 			{ x: app.screen.width / 5, y: 150 },
 		]
-		this.init()
+		this.init() //⚡️⚡️this 放最后的原因是上边的数据定义好后, 才能在 init() 中访问到!!
 	}
 
 	init() {
