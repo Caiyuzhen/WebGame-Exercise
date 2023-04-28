@@ -1,8 +1,9 @@
 import { Container, Sprite, TilingSprite, Text} from "../../libs/pixijs.js"
+import Character from "./character.js"
 
-
-export default class titleBox {
-	constructor({gameBlockTextTexture, rainbowColorTexture, chnText}, ticker) {
+export default class titleBox extends Character {
+	constructor({gameBlockTextTexture, rainbowColorTexture, chnText}, ticker, posInfo) {
+		super(posInfo) //🔋 posInfo 来自 PlayScene, 传到 Character 父类
 		this.element = new Container() //一样, 也是一个总的容器
 		this.gameBlockTextTexture = gameBlockTextTexture //存一下材质
 		this.rainbowColorTexture = rainbowColorTexture //存一下材质
@@ -13,6 +14,9 @@ export default class titleBox {
 	}
 
 	init() { 
+		// 🔥调用父类中的动画方法
+		this.superInit()
+
 		// ✴️ 用图片实现假文字
 		const gameBlockText = new Sprite(this.gameBlockTextTexture) //把材质传递给 Sprite, 实例出对象
 		this.element.addChild(gameBlockText)

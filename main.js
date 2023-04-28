@@ -16,6 +16,7 @@ const app = new Application({
 document.body.appendChild(app.view)
 
 
+// 👇统一引入材质 ————————————————————————————————————————
 // 加载字体
 await Assets.load('src/assets/fonts/RetroGaming.ttf')
 await Assets.load('src/assets/fonts/upheavtt.ttf')
@@ -38,7 +39,6 @@ Assets.addBundle('shapes', {
 	shape7: 'src/assets/shapes/shape7.png',
 	shape8: 'src/assets/shapes/shape8.png',
 })
-
 const shapeBundle = await Assets.loadBundle('shapes') //👈 loadBundle ！不是 load !
 console.log('shapeBundle:', shapeBundle)
 
@@ -51,8 +51,11 @@ const sheet = await Assets.load('src/assets/raibowStarSheet/rainbowStar.json')
 // ⚡️传入小星星数据数据、画布数据
 // const loadingSceneContainer = new LoadingSceneContainer(sheet, app) //传入画布（app, 然后下层去计算画布的宽高, 把元素放在画布中心）
 
+// 🎮挡板元素
+const barTexture = await Assets.load('src/assets/barElements/barBlock.png')
+const barCornerTexture = await Assets.load('src/assets/barElements/barCorner.png')
 
-const playScene = new PlayScene({gameBlockTextTexture, rainbowColorTexture, chnText, shapeBundle}, app) //👈传一个对象的方式
+const playScene = new PlayScene({gameBlockTextTexture, rainbowColorTexture, chnText, shapeBundle, barTexture, barCornerTexture}, app) //👈传一个对象的方式
 app.stage.addChild(playScene.sceneBox)
 
 
