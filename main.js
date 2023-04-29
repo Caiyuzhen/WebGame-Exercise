@@ -55,7 +55,13 @@ const sheet = await Assets.load('src/assets/raibowStarSheet/rainbowStar.json')
 const barTexture = await Assets.load('src/assets/barElements/barBlock.png')
 const barCornerTexture = await Assets.load('src/assets/barElements/barCorner.png')
 
-const playScene = new PlayScene({gameBlockTextTexture, rainbowColorTexture, chnText, shapeBundle, barTexture, barCornerTexture}, app) //👈传一个对象的方式
+
+// 🌟小星星元素
+const goldenStarTexture = await Assets.load('src/assets/barElements/goldenStar.png')
+
+
+
+const playScene = new PlayScene({gameBlockTextTexture, rainbowColorTexture, chnText, shapeBundle, barTexture, barCornerTexture, goldenStarTexture}, app) //👈传一个对象的方式
 app.stage.addChild(playScene.sceneBox)
 
 

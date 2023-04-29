@@ -26,8 +26,8 @@ export default class ShapeBox extends Character {
 	}
 
 	init() { 
-		this.needAutoScaleAnimation = true //🚀🚀用于让父元素判断是否需要添加缩放动画（这个属性修改的是父类的属性!）
-		console.log(this.needAutoScaleAnimation) //打印的是父类的属性, 被子类修改了
+		this.needAutoAnimation = true //🚀🚀用于让父元素判断是否需要添加缩放动画（这个属性修改的是父类的属性!）
+		console.log(this.needAutoAnimation) //打印的是父类的属性, 被子类修改了
 		this.element.x = this.posInfo.x //🔥🔥 posInfo 元素位置信息由上游传入！
 		this.element.y = this.posInfo.y //🔥🔥 posInfo 元素位置信息由上游传入！
 		// gsap.to(this.element.scale, this.AnimationInfo) //⚡️⚡️⚡️ GSAP 的帧动画 -> 【this.element.scale】 表示变化元素的 scale 属性,  【this.AnimationInfo】 表示要变化的参数

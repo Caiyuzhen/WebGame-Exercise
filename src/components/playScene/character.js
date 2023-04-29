@@ -42,7 +42,7 @@ export default class Character {
 			alpha: 1,
 			duration: 0.75,
 			onComplete: () => { //动画完成后触发
-				if(this.needAutoScaleAnimation) {
+				if(this.needAutoAnimation) {
 					gsap.to(
 						// 在子类中添加了一个 'scale' 属性用于判断是否应该执行缩放动画
 						this.autoAnimationType === 'scale' ? this.element.scale : this.element, 

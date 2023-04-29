@@ -24,7 +24,8 @@ export default class barElement extends Character {
 	}
 
 	init() {
-		this.needAutoScaleAnimation = true// 因为父类上有个【🔒动画锁】, 所以要 true 一下
+		this.needAutoAnimation = true// 因为父类上有个【🔒动画锁】, 所以要 true 一下
+
 		const centerBar = new Sprite(this.barTexture)
 		const leftSide = new Sprite(this.barCornerTexture)
 		const rightSide = new Sprite(this.barCornerTexture)

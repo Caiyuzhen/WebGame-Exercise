@@ -2,13 +2,15 @@ import { Container } from "../../libs/pixijs.js"
 import ShapeBox from "./shapeBox.js"
 import TitleBox from './titleBox.js'
 import BarElement from "./barElement.js"
+import GoldenStar from "./goldenStar.js"
+import StartBtn from './startBtn.js'
 
 
 export default class PlayScene {
 	/* constructor 跟 init() 是平层的关系, 要访问需要通过 this (指向实例) 中介
 		作用域是根据【函数定义】的地方, 而不是【函数被调用】的地方
 	*/
-	constructor({ gameBlockTextTexture, rainbowColorTexture, chnText, shapeBundle, barTexture, barCornerTexture }, app) { //🔥用解构赋值的方式来传递数据, 解构的【⚡️名称】必须一致 !!! 解构的【⚡️顺序】可以不一致 !!!
+	constructor({ gameBlockTextTexture, rainbowColorTexture, chnText, shapeBundle, barTexture, barCornerTexture, goldenStarTexture }, app) { //🔥用解构赋值的方式来传递数据, 解构的【⚡️名称】必须一致 !!! 解构的【⚡️顺序】可以不一致 !!!
 		this.sceneBox = new Container() // 👈存放游戏场景下所有元素的 box
 		this.gameBlockTextTexture = gameBlockTextTexture //承接文字材质
 		this.rainbowColorTexture = rainbowColorTexture //承接彩虹材质
@@ -17,6 +19,7 @@ export default class PlayScene {
 		this.app = app //🔥要存到实例上才能传递给下游使用！
 		this.barTexture = barTexture
 		this.barCornerTexture = barCornerTexture
+		this.goldenStarTexture = goldenStarTexture
 
 		// 👇图形小元素的位置数据, 传入 ShapeBox 内去做动画, 可以访问 this.app 也可以访问上游传下来的 app 来获取 screen 数据
 		this.shapePosInfo = [
@@ -68,7 +71,32 @@ export default class PlayScene {
 			this.barTexture, 
 			this.barCornerTexture,
 			{ from: { x: 100, y: this.app.screen.height - 300 }, to: { x: this.app.screen.width / 3, y: this.app.screen.height - 300 } }, //挡板元素的数据
-			)
+		)
 		this.sceneBox.addChild(barElement.element)
+
+
+		// 🌟创建星星元素
+		const goldenStar = new GoldenStar(this.goldenStarTexture,
+			// 🔥 使用封装的方法添加动画: 【第一步】, 把动画数据传递给封装的方法
+			{ from: { x: this.app.screen.width, y: 100 }, to: { x: this.app.screen.width / 2 + 100, y: 500 } }, //挡板元素的数据
+		)
+		this.sceneBox.addChild(goldenStar.element)
+
+
+
+		// 🔘创建底部 Start 按钮元素
+		const startBtn = new StartBtn({
+			// 这个只要传递动画数据就行了, 不用传递材质, 因为 StartBtn 内部已经创建了材质
+			from: {
+				x: this.app.screen.width / 2,
+				y: this.app.screen.height + 100
+			},
+			to: {
+				x: this.app.screen.width / 2,
+				y: this.app.screen.height - 120
+			}
+		})
+		this.sceneBox.addChild(startBtn.element)
+
 	}
 }
