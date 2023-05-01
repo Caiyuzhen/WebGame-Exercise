@@ -2,7 +2,7 @@
 import { Application, Assets } from './src/libs/pixijs.js'
 import LoadingSceneContainer from './src/components/loading/loadingSceneContainer.js'
 import PlayScene from './src/components/playScene/playScene.js'
-
+import GameLoader from './src/components/gameControl/gameLoader.js'
 
 // 初始化画布
 const app = new Application({
@@ -44,7 +44,7 @@ console.log('shapeBundle:', shapeBundle)
 
 
 // 🌟加载小星星的数据
-const sheet = await Assets.load('src/assets/raibowStarSheet/rainbowStar.json')
+const sheet = await Assets.load('src/assets/rainbowStarSheet/rainbowStar.json')
 // console.log(sheet)
 
 
@@ -66,3 +66,7 @@ app.stage.addChild(playScene.sceneBox)
 
 
 // app.stage.addChild(loadingSceneContainer.sceneBox)
+
+
+// 🔋 访问资源类中的资源
+GameLoader.getLoadSceneAssetsLoad()
