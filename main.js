@@ -16,7 +16,10 @@ const app = new Application({
 document.body.appendChild(app.view)
 
 
-// 👇统一引入材质 ————————————————————————————————————————
+
+
+// 👇统一引入材质资源 ————————————————————————————————————————
+// 📦未封装的写法
 // 加载字体
 await Assets.load('src/assets/fonts/RetroGaming.ttf')
 await Assets.load('src/assets/fonts/upheavtt.ttf')
@@ -47,6 +50,16 @@ console.log('shapeBundle:', shapeBundle)
 const sheet = await Assets.load('src/assets/rainbowStarSheet/rainbowStar.json')
 // console.log(sheet)
 
+// 📦封装后的写法
+// 🔋 进行资源类的加载 【记得要先加载资源, 再在下边实例化 star 跟 playScene 等! 加载后的资源是同源的, 会共用（前提是先执行 main.js, 🔥并且数据是放在静态属性上, 如果是实例化新对象的话那就不是同源的了！) 】
+GameLoader.getLoadSceneAssetsLoad()
+GameLoader.getPlayScensAssetsLoad()
+
+// 👆统一引入材质资源 ————————————————————————————————————————
+
+
+
+
 
 // ⚡️传入小星星数据数据、画布数据
 // const loadingSceneContainer = new LoadingSceneContainer(sheet, app) //传入画布（app, 然后下层去计算画布的宽高, 把元素放在画布中心）
@@ -66,7 +79,3 @@ app.stage.addChild(playScene.sceneBox)
 
 
 // app.stage.addChild(loadingSceneContainer.sceneBox)
-
-
-// 🔋 访问资源类中的资源
-GameLoader.getLoadSceneAssetsLoad()

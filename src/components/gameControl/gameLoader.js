@@ -49,12 +49,58 @@ export default class GameLoader {
 		}
 	} 
 
+
+	// 🔥🔥🔥 用于存储加载好的资源
+	static allData = {} //再下边执行加载方法时, 会把加载好的资源存储到这个对象内
+	
+
 	// 🌟 在资源类里边通过 static 静态属性定义的方法, 可以直接通过 this 来访问（因为静态属性的 this 指向类本身）
-	static getLoadSceneAssetsLoad() { //加载 scene 资源
+	// 🔥 Loading 场景的资源加载方法 ——————————————————
+	static async getLoadSceneAssetsLoad() { //加载 scene 资源, 作为异步函数!
 		// console.log('获得数据:', this.data)
 		const sceneData = this.data['loadScene']
-		const singlesData = sceneData.singles
+		const singles = sceneData.singles
 
 		// 🔥🔥 把 3 个资源作为一个【统一的整体】来加载
+		const singlesAssetsNames = []
+		for( let single of singles ) { // ⚡️ 遍历 singlesData 内的数据并统一 add 到 Assets 内
+			Assets.add(single.name, single.path) 
+			singlesAssetsNames.push(single.name) // ⚡️ 后续利用 pixi.js 内的 Assets 方法, 可以在回调内获得加载进度
+		}
+
+		const singlesData = await Assets.load(singlesAssetsNames) // ⚡️ 等待加载完成, 本质上也是利用 pixi.js 内的 Assets 方法
+		// console.log(singlesData)
+		this.allData.loadingScene = { ...singlesData } //🔥🔥把数据展开, 作为静态属性存储起来, 相当于给 GameLoader 保存静态熟悉
+	}
+
+
+
+	// 🔥 游戏场景的资源加载方法 ——————————————————
+	static async getPlayScensAssetsLoad() {
+		const sceneData = this.data['playScene']
+		const singles = sceneData.singles
+		const bundles = sceneData.bundles
+
+		// singles 资源
+		const singlesAssetsNames = []
+		for( let single of singles ) {
+			Assets.add(single.name, single.path)
+			singlesAssetsNames.push(single.name)
+		}
+
+		// bundles 资源
+		const bundlesAssetsNames = []
+		bundles.forEach((item) => {
+			Assets.addBundle(item.name, item.paths) //addBundle 、 loadBundle 方法也是 pixi.js 内的 Assets 方法
+			bundlesAssetsNames.push(item.name)
+		})
+
+		const singlesAssets = await Assets.load(singlesAssetsNames)
+		const bundlesAssets = await Assets.loadBundle(bundlesAssetsNames)
+		// console.log(singlesData, bundlesData)
+
+		// ⚡️利用静态属性存储加载好的资源!!
+		this.allData.playScene = { ...singlesAssets, ...bundlesAssets } //🔥🔥把数据展开, 作为静态属性存储起来, 相当于给 GameLoader 保存静态熟悉
+		
 	}
 }
