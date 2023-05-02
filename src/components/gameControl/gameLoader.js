@@ -25,7 +25,7 @@ export default class GameLoader {
 			singles: [
 				{ name: 'gameBlockTextTexture', path: 'src/assets/titleTextures/blockText.png' },
 				{ name: 'rainBowColorTexture', path: 'src/assets/titleTextures/rainBowColor.png' },
-				{ name: 'chineseTextTexture', path: 'src/assets/titleTextures/dang.png' },
+				{ name: 'chnTextTexture', path: 'src/assets/titleTextures/dang.png' },
 				{ name: 'barTexture', path: 'src/assets/barElements/barBlock.png' },
 				{ name: 'barCornerTexture', path: 'src/assets/barElements/barCorner.png' },
 				{ name: 'goldenStarTexture', path: 'src/assets/barElements/goldenStar.png' },
@@ -76,7 +76,7 @@ export default class GameLoader {
 
 
 	// 🔥 游戏场景的资源加载方法 ——————————————————
-	static async getPlayScensAssetsLoad() {
+	static async getPlayScenesAssetsLoad() {
 		const sceneData = this.data['playScene']
 		const singles = sceneData.singles
 		const bundles = sceneData.bundles
