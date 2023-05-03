@@ -10,6 +10,14 @@ export default class LoadingTitleContainer {
 		//🚀 整个【星星】 + 【进度条】的容器, 相当于打了一个组 (在这之前需要删除元素内部的移动)
 		this.element = new Container() 
 		this.rainbowStarSheetData = rainbowStarSheet
+		this.loadingBarInstance = null //⚡️用来获取进度条的实例
+
+		// 👇用来做消失动画
+		this.rainBowStarInstance = null
+		this.loadingBarInstance = null
+		this.loadingTextInstance = null
+		this.authorTextInstance = null
+
 		this.init()
 	}
 
@@ -17,6 +25,7 @@ export default class LoadingTitleContainer {
 		// 👇 统一进行实例化
 		const rainBowStar = new RainBowStar(this.rainbowStarSheetData) //加载小星星
 		const loadingBar = new LoadingBar() // 加载进度条
+		this.loadingBarInstance = loadingBar //⚡️用来获取进度条的实例
 		const loadingText = new LoadingText() // 加载文字
 		const authorText = new AuthorText() // 底部文字
 
@@ -38,5 +47,45 @@ export default class LoadingTitleContainer {
 
 		// 设置中心锚点
 		this.element.pivot.set(this.element.width / 2, this.element.height / 2)
+
+
+
+		// 👇用来做消失动画
+		this.rainBowStarInstance = rainBowStar
+		this.loadingBarInstance = loadingBar
+		this.loadingTextInstance = loadingText
+		this.authorTextInstance = authorText
+	}
+
+
+	// 游戏场景加载完后, loadingScene 场景消失的方法 (⚡️ control -> gameLoader -> loadingScene -> loadingTitleContainer )
+	disappear() {
+		gsap.to(this.rainBowStarInstance.elementBox, {
+			alpha: 0,
+			y: this.rainBowStarInstance.elementBox.y - 100,
+			duration: 0.75,
+			delay: 0.65,
+		})
+
+		gsap.to(this.loadingBarInstance.element, { //进度条的 bug 会晚消失, 目前看可能是 pixi.js 的 bug
+			alpha: 0,
+			// y: this.loadingBarInstance.element.y - 80,
+			duration: 0.75,
+			delay: 0.15,
+		})
+
+		gsap.to(this.loadingTextInstance.element, {
+			alpha: 0,
+			y: this.loadingTextInstance.element.y + 100,
+			duration: 0.75,
+			delay: 0.65,
+		})
+
+		gsap.to(this.authorTextInstance.element, {
+			alpha: 0,
+			y: this.authorTextInstance.element.y + 100,
+			duration: 0.75,
+			delay: 0.65,
+		})
 	}
 }

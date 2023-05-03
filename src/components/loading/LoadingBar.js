@@ -14,19 +14,20 @@ export default class LoadingBar {
 		// this.element.x = 100
 		// this.element.y = 260
 	
-		const obj = {
-			number: 0
-		}
+		// 检验一下进度条的动画
+		// const obj = {
+		// 	number: 0
+		// }
 
 		// 检验一下进度条的动画
-		gsap.to(obj, {
-			number: 100,
-			duration: 3,
-			onUpdate: () => {
-				this.barUpdate(obj.number)
-				console.log('3秒加载完')
-			}
-		})
+		// gsap.to(obj, {
+		// 	number: 100,
+		// 	duration: 3,
+		// 	onUpdate: () => {
+		// 		this.barUpdate(obj.number)
+		// 		console.log('3秒加载完')
+		// 	}
+		// })
 
 		// 🔥设置进度条的中心锚点
 		this.element.pivot.set(this.element.width / 2, this.element.height / 2)
@@ -43,7 +44,7 @@ export default class LoadingBar {
 		}
 	}
 
-	// 后续根据资源加载的进度来更新进度条
+	// ⚡️后续根据资源加载的进度来更新进度条, progress 为传入的 0～100 的数据, 表示当前加载到哪儿了的进度
 	barUpdate(progress) { // 进度条更新（变为彩色）, progress 为加载进度
 		for(let i = 0; i < this.num; i ++) { // 🔥 循环所有小方块
 			const bar = this.element.children[i] // 获取每个小方块
