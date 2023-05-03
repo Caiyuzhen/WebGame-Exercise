@@ -3,6 +3,7 @@ import RainBowStar from './rainBowStar.js'
 import LoadingBar from './LoadingBar.js'
 import LoadingText from './loadingText.js'
 import AuthorText from './authorText.js'
+import Control from '../gameControl/control.js'
 
 
 export default class LoadingTitleContainer {
@@ -65,6 +66,9 @@ export default class LoadingTitleContainer {
 			y: this.rainBowStarInstance.elementBox.y - 100,
 			duration: 0.75,
 			delay: 0.65,
+			onComplete: () => {
+				Control.playSceneAppear() //🚀🚀🚀 loading 完后显示游戏场景 playScene
+			}
 		})
 
 		gsap.to(this.loadingBarInstance.element, { //进度条的 bug 会晚消失, 目前看可能是 pixi.js 的 bug

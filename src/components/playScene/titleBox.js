@@ -2,14 +2,14 @@ import { Container, Sprite, TilingSprite, Text} from "../../libs/pixijs.js"
 import Character from "./character.js"
 
 export default class titleBox extends Character {
-	constructor({gameBlockTextTexture, rainbowColorTexture, chnText}, ticker, posInfo) {
+	constructor({gameBlockTextTexture, rainBowColorTexture, chnText}, ticker, posInfo) {
 		super(posInfo) //🔋 posInfo 来自 PlayScene, 传到 Character 父类
 		this.element = new Container() //一样, 也是一个总的容器
 		this.gameBlockTextTexture = gameBlockTextTexture //存一下材质
-		this.rainbowColorTexture = rainbowColorTexture //存一下材质
+		this.rainBowColorTexture = rainBowColorTexture //存一下材质
 		this.chnText = chnText //存一下材质
 		this.ticker = ticker //🔥🔥存一下 app.ticker, 用于下游的动画效果！！
-		console.log(this.gameBlockTextTexture);
+		// console.log(this.gameBlockTextTexture);
 		this.init()
 	}
 
@@ -22,8 +22,10 @@ export default class titleBox extends Character {
 		this.element.addChild(gameBlockText)
 
 		// 🌈🌈 TilingSprite 可以把材质进行平铺, 传入三个参数 (材质, 宽度, 高度)
-		const rainbowTextureLayer = new TilingSprite(this.rainbowColorTexture, this.gameBlockTextTexture.width, this.gameBlockTextTexture.height * 2) 
+		const rainbowTextureLayer = new TilingSprite(this.rainBowColorTexture, this.gameBlockTextTexture.width, this.gameBlockTextTexture.height * 2) 
 		this.element.addChild(rainbowTextureLayer)
+
+		console.log('🌈', this.rainBowColorTexture)
 
 		// 🔗 打一个组
 		const gameTitleBox = new Container()

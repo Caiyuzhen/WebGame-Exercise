@@ -7,7 +7,7 @@ export default class GoldenStar extends Character {
 		this.element = new Sprite(starTexture)
 
 		// 🔥 使用封装的方法添加动画: 【第二步】, 定义位移动化的数据
-		this.AnimationInfo = { 
+		this.AnimationInfo = { //星星不断上下变化的效果
 			keyframes: {
 				'0%': { y: posInfo.to.y },
 				'50%': { y: posInfo.to.y - 20 },
@@ -21,6 +21,20 @@ export default class GoldenStar extends Character {
 
 		this.init()
 	}
+
+
+
+	// 🚗游戏开始后移动星星到指定位置的方法
+	gameReadyToMoveStar() {
+		gsap.to(this.element, {
+			x: innerWidth / 2,
+			y: innerHeight -50,
+			duration: 0.75,
+		})
+	}
+
+
+
 
 	init() {
 		this.element.anchor.set(0.5)

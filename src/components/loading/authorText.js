@@ -64,7 +64,7 @@ export default class AuthorText {
 			clearInterval(intervalId)
 			// 取消循环变色
 			this.HelloText.style.fill = 0x3c3c3c
-			console.log('移出了')
+			// console.log('移出了')
 		})
 
 

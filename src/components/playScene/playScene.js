@@ -5,7 +5,7 @@ import BarElement from "./barElement.js"
 import GoldenStar from "./goldenStar.js"
 import StartBtn from './startBtn.js'
 import GameLoader from "../gameControl/gameLoader.js"
-
+import Control from "../gameControl/control.js"
 
 export default class PlayScene {
 	/* constructor 跟 init() 是平层的关系, 要访问需要通过 this (指向实例) 中介
@@ -18,6 +18,9 @@ export default class PlayScene {
 	constructor(app) { //🔥用解构赋值的方式来传递数据, 解构的【⚡️名称】必须一致 !!! 解构的【⚡️顺序】可以不一致 !!!
 		this.app = app //🔥要存到实例上才能传递给下游使用！ 
 		this.sceneBox = new Container() // 👈存放游戏场景下所有元素的 box
+		// 🚀🚀🚀 存放游戏场景内的所有元素实例, 然后等加载完成后统一调用基类的 showUp() 方法!
+		this.allInstances = []
+
 		// this.gameBlockTextTexture = gameBlockTextTexture //承接文字材质
 		// this.rainbowColorTexture = rainbowColorTexture //承接彩虹材质
 		// this.chnText = chnText
@@ -43,8 +46,49 @@ export default class PlayScene {
 		this.init() //⚡️⚡️this 放最后的原因是上边的数据定义好后, 才能在 init() 中访问到!!
 	}
 
+
+	// 🚀🚀🚀 显示游戏场景内所有实例的方法(🚀核心是让元素们各自调用基类身上的 moveShowUpEle() 方法🚀)
+	appear() {
+		// 🚀每个实例都调用基类的 moveShowUpEle() 方法, 注意离别要处理下数组元素！
+		for(let name in this.allInstances) {
+			if(name === 'shapes') {
+				this.allInstances[name].forEach((item) => {
+					item.moveShowUpEle()  //🚀显示元素 => 每个小元素都调用基类的 moveShowUpEle() 方法, 注意, 不是要操作元素, 而是调用元素身上的方法, 所以不用 this.element
+				})
+			} else {
+				this.allInstances[name].moveShowUpEle() //🚀显示元素
+			}
+		}
+	}
+
+
+	// 🚀🚀🚀游戏开始后, 把其他元素退出去, 只留下游戏元素 ⚡️ playScene -> Character 父类中定义 hidden 元素的方法
+	gameStarPlay() {
+		for(let name in this.allInstances) {
+			if(name === 'shapes') {
+				this.allInstances[name].forEach((item) => {
+					item.hideOff()  //🚀隐藏元素
+				})
+			} else {
+				this.allInstances[name].hideOff() //🚀隐藏元素
+			}
+		}
+	}
+
+
+	// 🔘 Start 按钮事件, 点击后开始游戏
+	startBtnEvent() {
+		this.allInstances.startBtn.element.eventMode = 'static'
+		this.allInstances.startBtn.element.addEventListener('pointerdown', () => {
+			// this.gameStarPlay() //写法一
+			Control.gameStar() //写法二, 统一用控制类管理
+		})
+	}
+
+
 	init() {
-		// 标题组件
+
+		// ✏️标题元素
 		const titleBox = new TitleBox({ //🔥🔥把材质、app.ticker 两个参数再传递给 titleBox 下游!!
 			// 👇未封装加载资源的写法
 			// gameBlockTextTexture: this.gameBlockTextTexture,  //因为要用 this.XXX 来赋值, 所以要用这种写法
@@ -53,9 +97,8 @@ export default class PlayScene {
 
 			// 📦封装加载方法过后的写法
 			gameBlockTextTexture: GameLoader.allData.playScene.gameBlockTextTexture,
-			rainbowColorTexture: GameLoader.allData.playScene.rainbowColorTexture,
+			rainBowColorTexture: GameLoader.allData.playScene.rainBowColorTexture,
 			chnText: GameLoader.allData.playScene.chnText
-
 
 		}, this.app.ticker //🔥🔥第二个参数传递 app.ticker, 用于下游的动画效果！！
 		// 🌈 彩虹标题的位置数据, 传入到 TitleBox 内去做动画
@@ -67,21 +110,27 @@ export default class PlayScene {
 		// titleBox.element.y = this.app.screen.height / 2
 		this.sceneBox.addChild(titleBox.element)
 
+		console.log('🌈', GameLoader.allData.playScene.rainBowColorTexture)
+
 
 		// 背景小元素组件
 		//for-in 循环、Object.keys() 的枚举顺序是不确定的, 但如果不在意对象内 value 的顺序就可以用
 		// 🔥遍历方法一: for-in 循环出 【所有点缀元素】
 		let k = 0
+		const shapeArray = [] //🚀🚀🚀装起来保存实例, 用于 allInstances , 加载完后显示 playScene 内的实例
 		for(let i in GameLoader.allData.playScene.shapesBundle) {
 		// for (let i in this.shapeBundle) { // i 相当于数组的索引
 			const shape = new ShapeBox(GameLoader.allData.playScene.shapesBundle[i], this.shapePosInfo[k++]) // k++ 用于遍历 shapePosInfo 内的所有数组
 			// const shape = new ShapeBox(this.shapeBundle[i], this.shapePosInfo[k++]) // k++ 用于遍历 shapePosInfo 内的所有数组
+			shapeArray.push(shape)
 			this.sceneBox.addChild(shape.element)
 		}
 
 		// 🔥遍历方法二: Object.keys() 方法, 传入一个对象, 会把它的所有属性名组成一个数组 【0:'shape1', 1:'shape2', ...】
 		// console.log(Object.keys(this.shapeBundle)) // 【0:'shape1', 1:'shape2', ...】
 		// console.log(Object.value(this.shapeBundle)) // 【0:'shape1', 1:'shape2', ...】
+
+
 
 
 		// 🎮创建挡板元素
@@ -95,12 +144,16 @@ export default class PlayScene {
 		this.sceneBox.addChild(barElement.element)
 
 
+
+
 		// 🌟创建星星元素
 		const goldenStar = new GoldenStar( GameLoader.allData.playScene.goldenStarTexture, //this.goldenStarTexture,
 			// 🔥 使用封装的方法添加动画: 【第一步】, 把动画数据传递给封装的方法
 			{ from: { x: this.app.screen.width, y: 100 }, to: { x: this.app.screen.width / 2 + 100, y: 500 } }, //挡板元素的数据
 		)
 		this.sceneBox.addChild(goldenStar.element)
+
+
 
 
 
@@ -118,5 +171,13 @@ export default class PlayScene {
 		})
 		this.sceneBox.addChild(startBtn.element)
 
+
+		this.allInstances.titleBox = titleBox
+		this.allInstances.shapes = shapeArray
+		this.allInstances.barElement = barElement
+		this.allInstances.goldenStar = goldenStar
+		this.allInstances.startBtn = startBtn
+
+		this.startBtnEvent() //执行一下 Start 按钮的事件（绑定事件)
 	}
 }

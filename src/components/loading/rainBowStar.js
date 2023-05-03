@@ -43,7 +43,7 @@ export default class RainBowStar {
 		// 每隔一段时间, 随机眨眼睛
 		setTimeout(() => {//箭头函数 this 指向的是 RainBowStar 的实例
 			this.autoWink()
-			console.log('眨眼了')
+			// console.log('眨眼了')
 		},  radomTime * 1000) //毫秒数
 	}
 

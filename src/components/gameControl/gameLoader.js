@@ -24,7 +24,7 @@ export default class GameLoader {
 			// 先进行单个资源单个资源的加载(字体, 图片等)
 			singles: [
 				{ name: 'gameBlockTextTexture', path: 'src/assets/titleTextures/blockText.png' },
-				{ name: 'rainBowColorTexture', path: 'src/assets/titleTextures/rainBowColor.png' },
+				{ name: 'rainBowColorTexture', path: 'src/assets/titleTextures/rainbowColor.png' },
 				{ name: 'chnTextTexture', path: 'src/assets/titleTextures/dang.png' },
 				{ name: 'barTexture', path: 'src/assets/barElements/barBlock.png' },
 				{ name: 'barCornerTexture', path: 'src/assets/barElements/barCorner.png' },
@@ -51,7 +51,8 @@ export default class GameLoader {
 
 	static basicProgress = 0 //基础加载进度（真实）
 	static finalProgress = 0 //减速后的进度
-	static loadingScene = null
+	// static loadingScene = null
+	static control = null
 
 	// 🔥🔥🔥 用于存储加载好的资源
 	static allData = {} //再下边执行加载方法时, 会把加载好的资源存储到这个对象内
@@ -74,12 +75,13 @@ export default class GameLoader {
 				num: 100,
 				duration: 3,
 				onUpdate: () => { //🔥🔥 onUpdate 监听 num 的变化
-					console.log(progressObj.num)
+					// console.log(progressObj.num)
 					loadingBar.barUpdate(progressObj.num)
-					console.log('开始改变假进度')
+					// console.log('开始改变假进度')
 				},
 				onComplete: () => { //🔥🔥 onUpdate 监听 num 的变化, 当加载完毕后, 进行场景切换 (⚡️ control -> gameLoader -> loadingScene -> loadingTitleContainer )
-					this.loadingScene.disappear()
+					// this.loadingScene.disappear()
+					this.control.loadSceneDisappear()
 				}
 			})
 		}
@@ -91,12 +93,12 @@ export default class GameLoader {
 	// 🔥 Loading 场景的资源加载方法 ——————————————————
 	static async getLoadSceneAssetsLoad() { //加载 scene 资源, 作为异步函数!
 		// console.log('获得数据:', this.data)
-		const sceneData = this.data['loadScene']
+		const sceneData = this.data['loadScene'] //=> singles
 		const singles = sceneData.singles
 
 
 
-		// 🔥🔥 把 3 个资源作为一个【统一的整体】来加载
+		// 🔥🔥 把 3 个文字资源作为一个【统一的整体】来加载
 		const singlesAssetsNames = []
 		for( let single of singles ) { // ⚡️ 遍历 singlesData 内的数据并统一 add 到 Assets 内
 			Assets.add(single.name, single.path) 
@@ -116,24 +118,27 @@ export default class GameLoader {
 
 
 	// 🔥 游戏场景的资源加载方法 ——————————————————
-	static async getPlayScenesAssetsLoad(loadingBar, loadingScene) {
+	// static async getPlayScenesAssetsLoad(loadingBar, loadingScene) {
+	static async getPlayScenesAssetsLoad(loadingBar, control) {
 
-		this.loadingScene = loadingScene //在类的静态属性上保存一下, 然后再用 gsap 的 onComplete 监听加载完成后就让它消失掉
+		// this.loadingScene = loadingScene //在类的静态属性上保存一下, 然后再用 gsap 的 onComplete 监听加载完成后就让它消失掉
+		this.control = control //在类的静态属性上保存一下, 然后再用 gsap 的 onComplete 监听加载完成后就让它消失掉
 
-		const sceneData = this.data['playScene']
+		const sceneData = this.data['playScene'] //=> singles, bundles
 		const singles = sceneData.singles
 		const bundles = sceneData.bundles
 
 
-		// singles 资源
+		// 存放 singles 资源
 		const singlesAssetsNames = []
 		for( let single of singles ) {
 			Assets.add(single.name, single.path)
 			singlesAssetsNames.push(single.name)
+			// console.log(single.name)
 		}
 
 
-		// bundles 资源
+		// 存放 bundles 资源
 		const bundlesAssetsNames = []
 		bundles.forEach((item) => {
 			Assets.addBundle(item.name, item.paths) //addBundle 、 loadBundle 方法也是 pixi.js 内的 Assets 方法
