@@ -24,11 +24,11 @@ export default class GoldenStar extends Character {
 
 
 
-	// 🚗游戏开始后移动星星到指定位置的方法
+	// 🚗游戏开始 Start 后移动星星到指定位置的方法
 	gameReadyToMoveStar() {
 		gsap.to(this.element, {
-			x: innerWidth / 2,
-			y: innerHeight -50,
+			x: innerWidth / 2 - 60, //调整游戏开始后星星的位置
+			y: innerHeight -50, //调整游戏开始后星星的位置
 			duration: 0.75,
 		})
 	}

@@ -11,6 +11,7 @@ export default class control {
 	static gameApp = null
 	static loadedScene = null //加载完毕后要消失的场景
 	static playScene = null //加载完毕后要显示的场景
+	static gameIsStart = false// 🎮判断游戏是否开启, 开始后 bar 才可以拖拽
 
 	// 游戏初始化
 	static async gameInit(app) {
@@ -58,5 +59,6 @@ export default class control {
 	// 🚀🚀游戏开始计分, ⚡️ playScene -> Character 父类中定义 hidden 元素的方法, 把其他元素退出去, 只留下游戏元素
 	static gameStar() {
 		this.playScene.gameStarPlay()
+		this.gameIsStart = true
 	}
 }

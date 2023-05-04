@@ -11,10 +11,9 @@ export default class Character {
 		this.isPlayLoopAnimation = null
 	}
 
-	// 👇定义一个方法, 在子类中去执行, 不然访问不到 element ！
+	// 👇定义一个方法, 在子类中去执行, 不然访问不到 element ！【🔥🔥🔥在子类中分别都调用 this.superInit() !!! 通过原型链访问到基类的方法】
 	superInit() {
 		// console.log(this.element) //⚡️因为先执行父类再执行子类, 如果这个函数不在子类中去执行的话, 会 undefined !!【⚡️里边的 this 谁调用就指向谁】
-
 
 		// this.moveShowUpEle() // 🚄 方便动画控制触发的时机 ——————————————————————————————————————————————————————————————
 		// 👇👇👇 每个 this.element 指向各自的子类, 因为被不同的子类分别调用了!!!
