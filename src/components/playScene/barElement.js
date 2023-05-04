@@ -67,6 +67,13 @@ export default class barElement extends Character {
 					x: e.client.x, //新位置
 					y: e.client.y, //新位置
 				}
+
+				// 🔥判断 bar 是否超出边界 (超出自身的一半)
+				if(this.element.x < this.element.width / 2) { //超出左边界
+					this.element.x = this.element.width / 2
+				} else if (this.element.x > innerWidth - this.element.width / 2) { //超出右边界
+					this.element.x = innerWidth - this.element.width / 2
+				}
 			}
 		})
 
@@ -134,8 +141,18 @@ export default class barElement extends Character {
 		// leftSide.x = leftSide.width / 2  + centerBar.width / 2// 移入一点
 		// leftSide.y = leftSide.height / 2 // 移入一点
 		// 👇因为都是在一个 Group 内, 并且 anchor 都位于中心!! 所以位移的话就相对于 Container !!
+		
+		// 👇下面都是为了让整个 bar 的中心点在中间, 居中对齐
+		leftSide.x = leftSide.width / 2
+		leftSide.y = leftSide.height / 2
 		centerBar.x = leftSide.width / 2  + centerBar.width / 2
+		centerBar.y = centerBar.height / 2
 		rightSide.x = leftSide.width + centerBar.width
+		rightSide.y = rightSide.height / 2
+
+		// 设置整体的中心锚点 (目的是为了 globalpointermove 事件内判断 bar 拖拽是否超过一半)
+		this.element.pivot.set(this.element.width / 2, this.element.height / 2)
+
 
 
 		this.setUpDrag()
@@ -146,10 +163,10 @@ export default class barElement extends Character {
 
 
 		// 👇看看效果
-		this.element.eventMode = 'static'
-		this.element.addEventListener('click', () => {
-			this.shortenBar()
-		})
+		// this.element.eventMode = 'static'
+		// this.element.addEventListener('click', () => {
+		// 	this.shortenBar()
+		// })
 
 
 		// 🚀🚀 调用一下 【基类】的方法 + 上边 【super()】 并传入 posInfo 就可以给元素加上动画了

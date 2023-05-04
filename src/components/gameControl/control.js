@@ -12,6 +12,13 @@ export default class control {
 	static loadedScene = null //加载完毕后要消失的场景
 	static playScene = null //加载完毕后要显示的场景
 	static gameIsStart = false// 🎮判断游戏是否开启, 开始后 bar 才可以拖拽
+	static currentShapeIndex = 0 //当前弹射元素的索引
+	static boundary = {//小元素的碰撞边界数据
+		left: 0,
+		right: innerWidth,
+		top: 0,
+		bottom: innerHeight,		
+	}
 
 	// 游戏初始化
 	static async gameInit(app) {
@@ -60,5 +67,56 @@ export default class control {
 	static gameStar() {
 		this.playScene.gameStarPlay()
 		this.gameIsStart = true
+		setTimeout(() => { //要延迟一点执行, 不然会跟把元素移出去的动画冲突
+			this.shapeMoveStart() 
+		}, 2000)
+	}
+
+	
+
+	//🚀🚀游戏开始后, 开始弹射小元素
+	static shapeMoveStart() {
+		this.playScene.allInstances.shapes.forEach((item) => { //allInstances.shapes 是所有小元素的实例
+			item.shapeRandomReady()//把所有小元素先【汇集】起来
+		}) 
+
+		// 🌟 随机获取一个 0-7 的整数, 作为要弹射的小元素的索引, 从而实现随机弹射小元素
+		const randomIndex = Math.floor(Math.random() * 8)
+		this.currentShapeIndex = randomIndex
+
+
+		// ⚡️注意, 这里有 this 指向问题, 会指向调用 ticker 的对象而不是指向 shapeBox, 所以要 bind 一下, 绑定在 shapeBox 自身的实例！
+		this.shapeMoveFunc = this.playScene.allInstances.shapes[this.currentShapeIndex].oneStep.bind(this.playScene.allInstances.shapes[this.currentShapeIndex])
+		this.gameApp.ticker.add( this.shapeMoveFunc )  //🔥⚡️【随机弹射】小元素, instance 实例 -> shapeBox -> oneStep(), 需要 ticker 来持续检测, 因为小元素如果出界后, 需要再次弹射！
+
+		this.detectBoundaryFunc = this.detectBoundary.bind(this) // 记得绑定 this , 指向 control 本身
+		this.gameApp.ticker.add(this.detectBoundaryFunc)
+
+		// 国 500ms 后就默认小元素已经进入了【游戏区域】, 这样就可以开始检测小元素是否出界了
+		setTimeout(()=>{
+			this.playScene.allInstances.shapes[randomIndex].shapeIsInArea = true
+		}, 500)
+	}
+
+
+
+	//🚀🚀判断元素是否超出边界
+	static detectBoundary() {
+		const shape = this.playScene.allInstances.shapes[this.currentShapeIndex] //获取到当前正在弹射的元素
+
+		// 是否超过左右边界
+		if(shape.element.x < this.boundary.left + shape.element.width / 2 || shape.element.x > this.boundary.right - shape.element.width / 2) {
+			shape.direction = Math.PI - shape.direction //💥改变碰撞方向
+		} 
+
+		// 是否超过上方边界
+		if(shape.element.y < this.boundary.top + shape.element.height / 2 && shape.shapeIsInArea) { //🔥 shape.isInArea 是为了防止元素一开始就在上边, 导致元素出不来
+			shape.direction = 2 * Math.PI - shape.direction //💥改变碰撞方向
+		}
+
+		//  是否超出底部边界
+		if(shape.element.y > this.boundary.bottom - shape.element.height / 2 + 100) { //100 表示下去远一点才算出界
+
+		}
 	}
 }

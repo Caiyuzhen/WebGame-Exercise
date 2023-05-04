@@ -21,9 +21,53 @@ export default class ShapeBox extends Character {
 			ease: 'none',
 			repeat: -1, //♾️ -1 表示无限循环
 		}
+
+
+		// 👇游戏开始后小元素飞入画面的一些数据
+		this.isMoving = false
+		this.direction = 0 //运行方向
+		this.speed = 12
+		this.x = null
+		this.y = null
+		this.vx = 0 //运行速度值
+		this.vy = 0 //运行速度值
+		this.shapeIsInArea = false //元素是否进入了游戏区域内
+
 		// console.log(posInfo) 
 		this.init()
 	}
+
+
+	// 👋把小元素汇集起来的方法
+	shapeRandomReady() { 
+		const randomX = Math.random() * innerWidth / 2 + innerWidth / 4 //要随机分布到视窗中央, Math.random() 随机返回 0~1 , innerWidth / 2 + innerWidth / 4 表示从 1 /4 处开始到 1 / 2 处), 因为 innerWidth / 4 表示视窗的 1 / 4 处
+		this.element.x = randomX
+		this.element.y = -50 //先放在窗口上方 -50 处
+
+		// 随机取一个 45 - 135 度的角度值
+		const randomAngle = Math.random() * 90 + 45
+
+		// 转化成弧度值
+		const randomRadian = randomAngle * Math.PI / 180
+
+		this.direction = randomRadian //把弧度值赋值给运行方向
+
+		this.x = this.element.x // 中间临时值, 用于计算
+		this.y = this.element.y // 中间临时值, 用于计算
+	}
+
+
+	// 👀哪个小元素调用这个方法, 就把那个小元素进行移动到指定位置
+	oneStep() {
+		this.isMoving = true
+		this.vx = this.speed * Math.cos(this.direction) // 先计算出 x 轴的速度值
+		this.vy = this.speed * Math.sin(this.direction) // 先计算出 y 轴的速度值
+		this.x += this.vx // 持续的运动
+		this.y += this.vy // 持续的运动
+		this.element.x = this.x
+		this.element.y = this.y
+	}
+
 
 	init() { 
 		this.needAutoAnimation = true //🚀🚀用于让父元素判断是否需要添加缩放动画（这个属性修改的是父类的属性!）
