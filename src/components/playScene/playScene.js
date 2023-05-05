@@ -7,6 +7,8 @@ import StartBtn from './startBtn.js'
 import GameLoader from "../gameControl/gameLoader.js"
 import Control from "../gameControl/control.js"
 import ScoreText from "./scoreText.js"
+import ReStartBtn from "./reStartBtn.js"
+import GameOverTitle from './gameOverTitle.js'
 
 export default class PlayScene {
 	/* constructor 跟 init() 是平层的关系, 要访问需要通过 this (指向实例) 中介
@@ -22,6 +24,8 @@ export default class PlayScene {
 		// 🚀🚀🚀 存放游戏场景内的所有(要飞出去的）元素实例, 然后等加载完成后统一调用基类的 showUp() 方法!
 		this.allInstances = []
 		this.scoreTextInstance = null
+		this.reStartBtnInstance = null // 重新开始按钮的实例
+		this.gameOverTitleInfo = null // Game Over 文字的实例
 
 		// this.gameBlockTextTexture = gameBlockTextTexture //承接文字材质
 		// this.rainbowColorTexture = rainbowColorTexture //承接彩虹材质
@@ -77,6 +81,9 @@ export default class PlayScene {
 		}
 
 		this.scoreTextInstance.moveShowUpEle() //🚀显示计分牌元素
+
+		this.reStartBtnInstance.hideOff() //👀一开始先隐藏【游戏结束的 reStart 按钮】
+		this.gameOverTitleInfo.hideOff() //👀一开始先隐藏【游戏结束的标题】
 	}
 
 
@@ -103,9 +110,11 @@ export default class PlayScene {
 			} else if (name === 'goldenStar') {
 				this.allInstances[name].showOverResult() //此方法定义在基类上, 因为【星星】跟【计分牌】都要执行
 			} 
-			// 计分牌没有被放入 allInstance 内, 所以要单独处理
-			this.scoreTextInstance.showOverResult()
 
+			// 🔥游戏结束后, 调用【基类】的 showOverResult() 方法, 把元素显示出来!! 基类定义方法, 位置就根据子类自己传入的位置
+			this.scoreTextInstance.showOverResult() // 计分牌没有被放入 allInstance 内, 所以要单独处理
+			this.reStartBtnInstance.moveShowUpEle()
+			this.gameOverTitleInfo.moveShowUpEle()
 		}
 	}
 
@@ -203,6 +212,31 @@ export default class PlayScene {
 			to: { x: this.app.screen.width / 2 + 50, y: this.app.screen.height - 76 } //this.app.screen.height 表示超出了窗口的高度
 		})
 		this.sceneBox.addChild(scoreText.element)
+
+
+
+		// ❌创建游戏结束时的【重新开始按钮】
+		const reStartText = new ReStartBtn({
+			from: { x: this.app.screen.width / 2, y: this.app.screen.height + 100 },
+			to: { x: this.app.screen.width / 2, y: this.app.screen.height - 100 }
+		})
+		this.reStartBtnInstance = reStartText
+		this.sceneBox.addChild(reStartText.element)
+
+
+
+		// //  ✏️创建游戏结束时的【标题】包含星星【星星】
+		const gameOverTitle = new GameOverTitle({
+			// 从中间顶部 100 处开始, 到中间 200 处结束
+			from: { x: this.app.screen.width / 2, y: -100 },
+			to: { x: this.app.screen.width / 2, y: 300 },
+		})
+
+		this.gameOverTitleInfo= gameOverTitle
+		this.sceneBox.addChild(gameOverTitle.element)
+
+
+
 
 
 		// 👇保存下实例用来做游戏开始后【要退出去】跟【不要退出去, 单独做动画】的元素们

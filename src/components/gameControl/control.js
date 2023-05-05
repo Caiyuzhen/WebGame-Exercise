@@ -215,5 +215,4 @@ export default class control {
 		this.gameIsStart = false
 		this.playScene.gameOver()
 	}
-
 }
