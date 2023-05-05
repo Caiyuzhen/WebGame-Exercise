@@ -125,6 +125,26 @@ export default class barElement extends Character {
 
 
 
+	// ❌游戏结束后, 重置 bar 挡板
+	resetBar() { 
+		gsap.to(this.barCenter, {
+			width: 138, //最开始的宽度是 138
+			duration: 0.55,
+		})
+		// 让左尖角移动 60, 因为每次缩短了 20, 3 条命缩短 60
+		gsap.to(this.leftSideBar, {
+			x: this.leftSideBar - 60,
+			duration: 0.55,
+		})
+		// 让右尖角移动 60, 因为每次缩短了 20, 3 条命缩短 60
+		gsap.to(this.rightSideBar, {
+			x: this.rightSideBar + 60,
+			duration: 0.55,
+		})
+	}
+
+
+
 	init() {
 		this.needAutoAnimation = true// 因为父类上有个【🔒动画锁】, 所以要 true 一下
 

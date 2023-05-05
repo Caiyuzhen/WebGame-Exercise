@@ -32,6 +32,7 @@ export default class ShapeBox extends Character {
 		this.vx = 0 //运行速度值
 		this.vy = 0 //运行速度值
 		this.shapeIsInArea = false //元素是否进入了游戏区域内
+		this.shapeIsOut = false //元素是否进入了挡板下方
 
 		// console.log(posInfo) 
 		this.init()

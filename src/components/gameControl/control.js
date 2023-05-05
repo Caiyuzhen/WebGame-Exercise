@@ -13,6 +13,8 @@ export default class control {
 	static playScene = null //加载完毕后要显示的场景
 	static gameIsStart = false// 🎮判断游戏是否开启, 开始后 bar 才可以拖拽
 	static currentShapeIndex = 0 //当前弹射元素的索引
+	static gameScore = 0 //游戏分数
+	static blockBarLife = 3 //剩多少条命
 	static boundary = {//小元素的碰撞边界数据
 		left: 0,
 		right: innerWidth,
@@ -68,14 +70,14 @@ export default class control {
 		this.playScene.gameStarPlay()
 		this.gameIsStart = true
 		setTimeout(() => { //要延迟一点执行, 不然会跟把元素移出去的动画冲突
-			this.shapeMoveStart() 
+			this.shapeStartMove() 
 		}, 2000)
 	}
 
 	
 
-	//🚀🚀游戏开始后, 开始弹射小元素
-	static shapeMoveStart() {
+	//🚀🚀游戏开始后, 开始弹射小元素(⚡️执行这个方法后会随机弹射出一个小元素)
+	static shapeStartMove() {
 		this.playScene.allInstances.shapes.forEach((item) => { //allInstances.shapes 是所有小元素的实例
 			item.shapeRandomReady()//把所有小元素先【汇集】起来
 		}) 
@@ -100,23 +102,118 @@ export default class control {
 
 
 
-	//🚀🚀判断元素是否超出边界
+	//💥💥💥 判断元素是否超出边界
 	static detectBoundary() {
-		const shape = this.playScene.allInstances.shapes[this.currentShapeIndex] //获取到当前正在弹射的元素
+	
 
-		// 是否超过左右边界
+		const shape = this.playScene.allInstances.shapes[this.currentShapeIndex] //获取到当前正在弹射的元素
+		const blockBar = this.playScene.allInstances.barElement //获取挡板边界
+
+		
+
+		// 👇元素是否超出【挡板】边界的核心逻辑 ——————————————————————————————————————————————————————————
+		//  🔥🔥获取元素的全局坐标: getGlobalPosition(),  const { x: barX, y: barY } 相当于解构赋值 => 坐标值以元素的【中心锚点】来计算, 因为我们之前设置了 bar 的中心锚点
+		const { x: barX, y: barY } = blockBar.element.getGlobalPosition() //👈 因为 detectBoundary() 方法不停的被 ticker 调用, 所以数据会一直在更新！
+		console.log(barX, barY)
+
+		const barLeftArea = barX - blockBar.element.width / 2
+		const barRightArea = barX + blockBar.element.width / 2
+		const barTopArea = barY - blockBar.element.height / 2
+
+		if(shape.element.y + shape.element.height / 2 >= barTopArea) {
+			if(shape.element.x + shape.element.width / 2 >= barLeftArea && 
+			   shape.element.x - shape.element.height / 2 <= barRightArea) {
+				 if(!shape.shapeIsOut) { //当元素不是从 -> 侧边 -> 进入挡板底部时, 才会触发
+					//【➕ 加分的相关逻辑】把元素挡回去
+				 	shape.direction = 2 * Math.PI - shape.direction //💥改变碰撞方向(变为挡回去的方向 -> 变成向上)
+					this.hitBar()
+				 }
+			   } else {
+				  shape.shapeIsOut = true
+			   }
+		}
+
+
+
+		// 👇元素是否超出【画面】边界的核心逻辑 ——————————————————————————————————————————————————————————
+		// 是否超过【画面】左右边界
 		if(shape.element.x < this.boundary.left + shape.element.width / 2 || shape.element.x > this.boundary.right - shape.element.width / 2) {
 			shape.direction = Math.PI - shape.direction //💥改变碰撞方向
 		} 
 
-		// 是否超过上方边界
+		// 是否超过【画面】上方边界
 		if(shape.element.y < this.boundary.top + shape.element.height / 2 && shape.shapeIsInArea) { //🔥 shape.isInArea 是为了防止元素一开始就在上边, 导致元素出不来
 			shape.direction = 2 * Math.PI - shape.direction //💥改变碰撞方向
 		}
 
-		//  是否超出底部边界
+		//  是否超出【画面】底部边界
 		if(shape.element.y > this.boundary.bottom - shape.element.height / 2 + 100) { //100 表示下去远一点才算出界
-
+			// 出界后的相关逻辑: bar 变短 + 重新弹射出一个元素
+			// ...
+			this.shapeGetOut()
 		}
 	}
+
+
+	// ⚽️ 挡回去并加分
+	static hitBar() {
+		// 加分
+		const scoreTextInstance = this.playScene.scoreTextInstance
+		this.gameScore += 100
+		scoreTextInstance.element.text = this.gameScore
+
+		// 加分后星星跳动
+		const goldenStarInstance = this.playScene.allInstances.goldenStar
+		goldenStarInstance.bounce()
+	}
+
+
+	// 🚪 出界后的相关逻辑（重新弹射元素、bar 变短）
+	static shapeGetOut() {
+		if(this.blockBarLife > 0) { //👈当还有生命时
+			this.blockBarLife -= 1 // 减去一条命
+
+			// 删除当前在场景内弹射的元素
+			this.gameApp.ticker.remove(this.shapeMoveFunc)
+
+			// 删除当前正在检测的【画布】边界
+			this.gameApp.ticker.remove(this.detectBoundaryFunc) //因为这个检测方法【跟当前元素】绑定
+
+			// 删除当前正在检测的【挡板】边界
+			const shape = this.playScene.allInstances.shapes[this.currentShapeIndex]
+
+			// 元素出界
+			shape.shapeIsInArea = false
+		
+			// 让 bar 减短
+			this.playScene.allInstances.barElement.shortenBar()
+
+			setTimeout(() => {
+				shape.shapeIsOut = false // 重置元素出界的状态
+				this.shapeStartMove()
+			}, 1000)
+		} else { //👈当没了生命
+			// 删除当前在场景内弹射的元素
+			this.gameApp.ticker.remove(this.shapeMoveFunc)
+
+			// 删除当前正在检测的【画布】边界
+			this.gameApp.ticker.remove(this.detectBoundaryFunc) //因为这个检测方法【跟当前元素】绑定
+
+			// 删除当前正在检测的【挡板】边界
+			const shape = this.playScene.allInstances.shapes[this.currentShapeIndex]
+
+			// 元素出界
+			shape.shapeIsInArea = false
+			// 游戏结束
+			this.gameOver()
+			// ...
+		}
+	}
+
+	// ❌ 游戏结束的场景
+	static gameOver() { 
+		this.gameIsStart = false
+		this.playScene.gameOver()
+	}
+
 }

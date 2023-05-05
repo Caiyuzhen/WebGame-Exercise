@@ -71,7 +71,8 @@ export default class Character {
 	hideOff() {
 		// 先暂停再移开元素
 		if(this.isPlayLoopAnimation) {
-			this.isPlayLoopAnimation.pause() //👈停止元素自动变化的效果 kill() 完全清除, pause() 暂停
+			// this.isPlayLoopAnimation.pause() //👈停止元素自动变化的效果 kill() 完全清除, pause() 暂停
+			this.isPlayLoopAnimation.kill() //👈停止元素自动变化的效果 kill() 完全清除, pause() 暂停
 		}
 
 		console.log(this)
@@ -95,5 +96,16 @@ export default class Character {
 			})
 		}
 	}
+
+
+
+	// 🏆显示记分结果【星星】、【分数】
+	showOverResult() { 
+		gsap.to(this.element, {
+			y: this.element.y - 500,
+			duration: 0.75,
+		})
+	}
+
 	
 }

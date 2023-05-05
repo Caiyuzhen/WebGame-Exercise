@@ -35,6 +35,24 @@ export default class GoldenStar extends Character {
 
 
 
+	// ✨加分后星星跳动的方法
+	bounce() {
+		gsap.to(this.element, { //向上位移动
+			y: this.element.y - 10, 
+			duration: 0.2,
+			ease: 'linear',
+			onComplete: () => {
+				gsap.to(this.element, { //恢复原处
+					y: this.element.y + 10,
+					duration: 0.15,
+					ease: 'linear', //linear
+				})
+			}
+		})
+	}
+
+
+
 
 	init() {
 		this.element.anchor.set(0.5)

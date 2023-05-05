@@ -90,6 +90,26 @@ export default class PlayScene {
 	}
 
 
+	// 🎮游戏结束后的布局
+	gameOver() {
+		for(let name in this.allInstances) {
+			if(name === 'shapes') {
+				this.allInstances[name].forEach((item) => {
+					item.moveShowUpEle()  
+				})
+			} else if(name === 'barElement'){ //游戏结束后，恢复挡板的运动状态
+				this.allInstances[name].moveShowUpEle()
+				this.allInstances[name].resetBar()
+			} else if (name === 'goldenStar') {
+				this.allInstances[name].showOverResult() //此方法定义在基类上, 因为【星星】跟【计分牌】都要执行
+			} 
+			// 计分牌没有被放入 allInstance 内, 所以要单独处理
+			this.scoreTextInstance.showOverResult()
+
+		}
+	}
+
+
 	init() {
 
 		// ✏️标题元素
@@ -160,7 +180,6 @@ export default class PlayScene {
 
 
 
-
 		// 🔘创建底部 Start 按钮元素
 		const startBtn = new StartBtn({
 			// 这个只要传递动画数据就行了, 不用传递材质, 因为继承自 Character 类, 已经在基类中定义 posInfo 的动画！
@@ -177,7 +196,6 @@ export default class PlayScene {
 
 
 
-
 		// 🧮创建计分牌元素
 		const scoreText = new ScoreText({
 			// 👇只要传递数据就好了, 因为在基类上已经定义了方法, 然后再在 scoreText 内部调用来做动画
@@ -185,7 +203,6 @@ export default class PlayScene {
 			to: { x: this.app.screen.width / 2 + 50, y: this.app.screen.height - 76 } //this.app.screen.height 表示超出了窗口的高度
 		})
 		this.sceneBox.addChild(scoreText.element)
-
 
 
 		// 👇保存下实例用来做游戏开始后【要退出去】跟【不要退出去, 单独做动画】的元素们
