@@ -81,9 +81,11 @@ export default class PlayScene {
 		}
 
 		this.scoreTextInstance.moveShowUpEle() //🚀显示计分牌元素
-
 		this.reStartBtnInstance.hideOff() //👀一开始先隐藏【游戏结束的 reStart 按钮】
 		this.gameOverTitleInfo.hideOff() //👀一开始先隐藏【游戏结束的标题】
+
+		Control.blockBarLife = 3 //🚀🚀🚀游戏开始后, 把挡板的生命值重置为 3
+		Control.resetScore() //🚀🚀🚀游戏开始后, 把分数重置为 0
 	}
 
 
@@ -182,7 +184,7 @@ export default class PlayScene {
 		// 🌟创建星星元素
 		const goldenStar = new GoldenStar( GameLoader.allData.playScene.goldenStarTexture, //this.goldenStarTexture,
 			// 🔥 使用封装的方法添加动画: 【第一步】, 把动画数据传递给封装的方法
-			{ from: { x: this.app.screen.width, y: 100 }, to: { x: this.app.screen.width / 2 + 100, y: 500 } }, //挡板元素的数据
+			{ from: { x: this.app.screen.width, y: 100 }, to: { x: this.app.screen.width / 2 + 120, y: 500 } }, //挡板元素的数据
 		)
 		this.sceneBox.addChild(goldenStar.element)
 
@@ -208,8 +210,8 @@ export default class PlayScene {
 		// 🧮创建计分牌元素
 		const scoreText = new ScoreText({
 			// 👇只要传递数据就好了, 因为在基类上已经定义了方法, 然后再在 scoreText 内部调用来做动画
-			from: { x: this.app.screen.width / 2 + 50, y: this.app.screen.height + 100 },
-			to: { x: this.app.screen.width / 2 + 50, y: this.app.screen.height - 76 } //this.app.screen.height 表示超出了窗口的高度
+			from: { x: this.app.screen.width / 2 + 20, y: this.app.screen.height + 100 },
+			to: { x: this.app.screen.width / 2 + 20, y: this.app.screen.height - 76 } //this.app.screen.height 表示超出了窗口的高度
 		})
 		this.sceneBox.addChild(scoreText.element)
 
@@ -218,7 +220,7 @@ export default class PlayScene {
 		// ❌创建游戏结束时的【重新开始按钮】
 		const reStartText = new ReStartBtn({
 			from: { x: this.app.screen.width / 2, y: this.app.screen.height + 100 },
-			to: { x: this.app.screen.width / 2, y: this.app.screen.height - 100 }
+			to: { x: this.app.screen.width / 2, y: this.app.screen.height - 105 }
 		})
 		this.reStartBtnInstance = reStartText
 		this.sceneBox.addChild(reStartText.element)
@@ -229,7 +231,7 @@ export default class PlayScene {
 		const gameOverTitle = new GameOverTitle({
 			// 从中间顶部 100 处开始, 到中间 200 处结束
 			from: { x: this.app.screen.width / 2, y: -100 },
-			to: { x: this.app.screen.width / 2, y: 300 },
+			to: { x: this.app.screen.width / 2, y: 265 },
 		})
 
 		this.gameOverTitleInfo= gameOverTitle

@@ -17,7 +17,7 @@ export default class GameOverTitle extends Character {
 		// 加载星星数据
 		const rainBowStar = new RainBowStar(GameLoader.allData.loadingScene.rainbowStarSheetData)
 		const gameOverText = new Text('Game Over', {
-			fontFamily: 'RetorGaming',
+			fontFamily: 'RetroGaming',
 			fill: 0xFFFFFF,
 			fontSize: 82,
 			letterSpacing: 2,

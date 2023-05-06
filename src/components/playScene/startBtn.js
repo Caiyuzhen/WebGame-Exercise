@@ -24,7 +24,7 @@ export default class StartBtn extends Character {
 	
 	init() {
 		this.superInit()
-		this.element.anchor.set(0.5)
+		// this.element.anchor.set(0.5)
 		// 👇鼠标 hover 上去后, 颜色不断改变
 		this.element.eventMode = 'static'
 		this.element.on('mouseover', () => {

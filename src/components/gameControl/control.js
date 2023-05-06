@@ -1,13 +1,16 @@
 import LoadingSceneContainer from '../loading/loadingSceneContainer.js'
 import PlayScene from '../playScene/playScene.js'
 import GameLoader from '../gameControl/gameLoader.js'
+import AudioIcon from './audioIcon.js'
+const { sound } = PIXI
 
 
 
 
 // 🪜用来管理游戏加载的逻辑（比如加载资源、显示加载场景、加载游戏场景资源、显示游戏场景、游戏结束场景等）
-export default class control {
+export default class Control {
 
+	// 👇👇定义静态属性, 在整个项目中共享数据
 	static gameApp = null
 	static loadedScene = null //加载完毕后要消失的场景
 	static playScene = null //加载完毕后要显示的场景
@@ -15,6 +18,7 @@ export default class control {
 	static currentShapeIndex = 0 //当前弹射元素的索引
 	static gameScore = 0 //游戏分数
 	static blockBarLife = 3 //剩多少条命
+	static isMobile = false //判断是否是移动端
 	static boundary = {//小元素的碰撞边界数据
 		left: 0,
 		right: innerWidth,
@@ -22,6 +26,7 @@ export default class control {
 		bottom: innerHeight,		
 	}
 
+	// 👇👇对于不需要被实例化的控制类, 可以定义静态方法给外部调用
 	// 游戏初始化
 	static async gameInit(app) {
 		this.gameApp = app
@@ -29,19 +34,40 @@ export default class control {
 		// 【加载 loadScene 场景资源】
 		// 🔋 第 1 步: 加载好【加载场景的资源】
 		await GameLoader.getLoadSceneAssetsLoad() 
+		sound.add('hit', '/src/assets/audio/block.mp3') //🔥添加声音资源(自定义声音名称 + 路径)
+		sound.add('fail', '/src/assets/audio/fail.mp3') //🔥添加声音资源(自定义声音名称 + 路径)
+		sound.add('decrease', '/src/assets/audio/decrease.mp3') //🔥添加声音资源(自定义声音名称 + 路径)
+		sound.add('opening', '/src/assets/audio/opening.mp3') //🔥添加声音资源(自定义声音名称 + 路径)
+		sound.volumeAll = 0.2 //🔥设置声音音量大小
+		sound.muteAll() //🔥一开始先静音
+		const audioIcon = new AudioIcon(this.gameApp) //🔥创建声音 icon
+		this.gameApp.stage.addChild(audioIcon.element)
+
+
+
+		// 👇在加载游戏资源前, 检测一下是否是移动端
+		this.detectDevice()
+
 
 		// 🔋 第 2 步: 创建【加载场景】
 		const loadingScene = new LoadingSceneContainer(this.gameApp)
-		this.loadedScene = loadingScene
+		if(this.isMobile) { //如果是移动端, 就缩小这个场景
+			loadingScene.sceneBox.scale.set(0.6)
+		}
+		
 
 		// 🔋 第 3 步: 把【加载场景】渲染到舞台
 		this.gameApp.stage.addChild(loadingScene.sceneBox)
 
+		this.loadedScene = loadingScene
+
+		
 
 		// 🔋 第 4 步:【加载 playScene 场景资源】, 让进度条跟这个加载进度保持同步, 并且让 【加载场景】消失
-		//  loadingScene ->  LoadingTitleContainer  ->  loadingBarInstance
+		//  loadingScene ->  LoadingTitleCon.gameApp
 		// await GameLoader.getPlayScenesAssetsLoad(loadingScene.loadingBarInstance, loadingScene) //loadingScene 传入 loadingScene 是为了让加载场景消失 (⚡️ control -> gameLoader -> loadingScene -> loadingTitleContainer )
 		await GameLoader.getPlayScenesAssetsLoad(loadingScene.loadingBarInstance, this) // 🔥或this 就是 control 本身, 最终调用的是下边的 loadSceneDisappear 方法
+
 
 
 		// 🔋 第 5 步: 创建【游戏场景】
@@ -60,7 +86,11 @@ export default class control {
 
 	// 🚀🚀🚀用来管理游戏场景的出现逻辑 (控制器逻辑 -> 控制出现的对象) , 比较符合直觉, 🔥🔥最终在 loadingTiTleContainer 中的 disappear 方法内的 onComplete 回调内调用!!
 	static playSceneAppear() {
-		this.playScene.appear() 
+		this.playScene.appear()
+		// 🔊🔊开始播放
+		sound.play('opening', {
+			loop: true //没传第二个参数的话, 默认就播放一次
+		})
 	}
 
 
@@ -69,6 +99,11 @@ export default class control {
 	static gameStar() {
 		this.playScene.gameStarPlay()
 		this.gameIsStart = true
+
+		// 🔇🔇停止播放
+		sound.stop('opening') //结束上一个声音
+
+
 		setTimeout(() => { //要延迟一点执行, 不然会跟把元素移出去的动画冲突
 			this.shapeStartMove() 
 		}, 2000)
@@ -157,6 +192,9 @@ export default class control {
 
 	// ⚽️ 挡回去并加分
 	static hitBar() {
+		// 🔊🔊播放挡回去的声音
+		sound.play('hit')
+
 		// 加分
 		const scoreTextInstance = this.playScene.scoreTextInstance
 		this.gameScore += 100
@@ -170,6 +208,7 @@ export default class control {
 
 	// 🚪 出界后的相关逻辑（重新弹射元素、bar 变短）
 	static shapeGetOut() {
+
 		if(this.blockBarLife > 0) { //👈当还有生命时
 			this.blockBarLife -= 1 // 减去一条命
 
@@ -187,6 +226,9 @@ export default class control {
 		
 			// 让 bar 减短
 			this.playScene.allInstances.barElement.shortenBar()
+
+			// 🔊🔊播放元素出界的声音
+			sound.play('decrease')
 
 			setTimeout(() => {
 				shape.shapeIsOut = false // 重置元素出界的状态
@@ -206,6 +248,9 @@ export default class control {
 			shape.shapeIsInArea = false
 			// 游戏结束
 			this.gameOver()
+			
+			// 🔊🔊播放游戏结束的声音
+			sound.play('fail')
 			// ...
 		}
 	}
@@ -214,5 +259,26 @@ export default class control {
 	static gameOver() { 
 		this.gameIsStart = false
 		this.playScene.gameOver()
+	}
+
+
+	//  ❌ 游戏结束后, 重置分数
+	static resetScore() { 
+		this.gameScore = 0
+		const scoreTextInstance = this.playScene.scoreTextInstance
+		scoreTextInstance.element.text = this.gameScore
+	}
+
+
+	// 📱检测是否是移动端
+	static detectDevice() { 
+		const UA = navigator.userAgent
+		const ipad = UA.match(/(iPad).*OS\s([\d_]+)/)
+		const isIphone = !ipad && UA.match(/(iPhone\sOS)\s([\d_]+)/)
+		const isAndroid = UA.match(/(Android)\s+([\d.]+)/)
+		const isMobile = isIphone || isAndroid
+		if(isMobile) { 
+			this.isMobile = true
+		}
 	}
 }

@@ -133,12 +133,12 @@ export default class barElement extends Character {
 		})
 		// 让左尖角移动 60, 因为每次缩短了 20, 3 条命缩短 60
 		gsap.to(this.leftSideBar, {
-			x: this.leftSideBar - 60,
+			x: this.leftSideBar.x - 60,
 			duration: 0.55,
 		})
 		// 让右尖角移动 60, 因为每次缩短了 20, 3 条命缩短 60
 		gsap.to(this.rightSideBar, {
-			x: this.rightSideBar + 60,
+			x: this.rightSideBar.x + 60,
 			duration: 0.55,
 		})
 	}

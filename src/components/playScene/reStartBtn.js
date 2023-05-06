@@ -1,5 +1,6 @@
 import Character from "./character.js"
 import { Text } from '../../libs/pixijs.js'
+import Control from '../gameControl/control.js'
 
 
 export default class ReStartBtn extends Character {
@@ -14,7 +15,7 @@ export default class ReStartBtn extends Character {
 
 	init() { 
 		this.element = new Text('ReStart', {
-			fontFamily: 'RetorGaming',
+			fontFamily: 'RetroGaming',
 			fill: 0x641CFC,
 			fontSize: 48,
 			letterSpacing: 2,
@@ -40,6 +41,13 @@ export default class ReStartBtn extends Character {
 			document.body.style.cursor = 'default'
 		})
 	
+
+
+		// 👋点击重新开始游戏, 核心是执行 control 里边的 gameStar() 方法
+		this.element.on('pointerdown', () => {
+			Control.gameStar()
+		})
+
 		this.superInit()
 	}
 }

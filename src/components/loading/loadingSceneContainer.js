@@ -32,6 +32,12 @@ export default class LoadingSceneContainer {
 		this.sceneBox.addChild(loadingTitleContainer.element) 
 
 
+		// 设置中心锚点
+		this.sceneBox.pivot.set(this.app.screen.width / 2, this.app.screen.height / 2)
+		this.sceneBox.x = innerWidth / 2
+		this.sceneBox.y = innerHeight / 2
+
+
 		// 放到实例上
 		this.loadingTitleInstance = loadingTitleContainer
 	}

@@ -14,7 +14,7 @@ export default class GameLoader {
 		loadScene: {
 			// 先进行单个资源单个资源的加载(字体, 图片等)
 			singles: [
-				{ name: 'RetorGaming', path: 'src/assets/fonts/RetroGaming.ttf' },
+				{ name: 'RetroGaming', path: 'src/assets/fonts/RetroGaming.ttf' },
 				{ name: 'upheavtt', path: 'src/assets/fonts/upheavtt.ttf' },
 				{ name: 'rainbowStarSheetData', path: 'src/assets/rainbowStarSheet/rainbowStar.json' }
 			]
